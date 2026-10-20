@@ -21,6 +21,10 @@ This project explores digital signal processing by building a Shazam-style song 
 ## How to Run This Project
 The easiest way to run the pipeline is directly in Google Colab, which avoids any local installation issues.
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/codesearth/XX_SuperSong_XX1000/blob/main/SuperSong1000.ipynb)
+
+OR
+
 1. Click on the `.ipynb` notebook file in this repository.
 2. Click the **Open in Colab** button at the top of the file view.
 3. Run Cell 1 to automatically download the 40-song database into the Colab environment.
