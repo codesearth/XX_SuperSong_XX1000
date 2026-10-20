@@ -1,6 +1,6 @@
-# Sonic Signatures: Final Conclusions & Problem Statement Answers
+# SuperSong: Final Conclusions & Problem Statement Answers
 
-This document directly addresses the core research questions posed in the Sonic Signatures project brief, comparing the Shazam-style peak-pair hash recognizer (Task 6) with the simple average spectral baseline (Task 5).
+This document directly addresses the core research questions posed in the project brief, comparing the Shazam-style peak-pair hash recognizer (Task 6) with the simple average spectral baseline (Task 5).
 
 ---
 
