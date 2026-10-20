@@ -1,0 +1,58 @@
+Sonic Signatures: Complete Experimental Results & Analysis
+====================================================================
+Repository: codesearth/XX_SuperSong_XX1000
+Project Pipeline: Audio Analysis -> Spectrogram Fingerprinting -> Time-Offset Recognition -> Robustness Testing
+
+Group 1: Audio Analysis & Spectrograms (Tasks 1-3)
+--------------------------------------------------------------------
+1. Audio Normalization & Inspection
+All 40 database songs were standardized to a 22,050 Hz sample rate, converted to mono, and peak-normalized to an amplitude range of [-1, 1]. This ensured consistent frequency bin sizing and prevented loud tracks from dominating the thresholding algorithms.
+
+2. Window-Size Trade-off (Time vs. Frequency Resolution)
+We compared STFT window sizes (n_fft of 512, 1024, 2048, and 4096) with a 256-sample hop length. 
+* A small window (n_fft=512) provided excellent time resolution for sharp drum transients but smeared frequency rows.
+* A large window (n_fft=4096) isolated exact musical pitches but smeared the timing of the notes.
+* Verdict: We selected n_fft=2048 (~93 ms window, 10.8 Hz bins) as the optimal balance for music fingerprinting.
+
+3. Spectral Peak Detection (Constellation Maps)
+To identify the most prominent audio features, we applied a 2D maximum filter (freq_radius=10, time_radius=10) across the spectrogram. Peaks below a -40 dB threshold relative to the local maximum were discarded. This successfully reduced dense, noisy spectrograms into sparse "constellation maps" of high-energy anchor points.
+
+
+Group 2: Fingerprinting & Matching Engine (Tasks 4-6)
+--------------------------------------------------------------------
+4. Landmark Fingerprinting (Combinatorial Hashing)
+Using the constellation peaks, we linked each "Anchor" peak to multiple "Target" peaks occurring forward in time. We recorded the anchor frequency (f1), target frequency (f2), and the time delta between them (dt). These three integers were hashed using SHA-1 to create a 32-bit integer signature, yielding a highly robust database index where each hash points to a (song_name, absolute_time) pair.
+
+5. Simple Spectral Baseline (Cosine Similarity)
+For comparison, we implemented a baseline recognizer that averages the magnitude spectrogram across all time frames, creating a 1D frequency profile for each song. Query clips were matched against the database using Cosine Similarity. 
+
+6. Shazam-Style Recognizer (Time-Offset Histograms)
+For the primary recognizer, query clips were hashed and matched against the database. For every matching hash, we calculated the offset: Offset = Database_Time - Query_Time. The song that accumulated the highest peak (mode) in its offset histogram was declared the winner.
+
+
+Group 3: Robustness & Torture-Test Results (Tasks 8-10)
+--------------------------------------------------------------------
+We evaluated both recognizers across 10-song subsets under extreme audio degradations.
+
+Task 8: Query Length & Starting Position
+* Baseline Matcher: Failed frequently on clips under 5 seconds (averaging ~20-40% accuracy) and struggled significantly on Intros/Outros, as a song's intro rarely matches its global average frequency profile.
+* Shazam Matcher: Achieved near 100% accuracy on clips as short as 2 seconds, regardless of whether the clip was pulled from the intro, chorus, or bridge.
+
+Task 9: Additive White Gaussian Noise (AWGN)
+We tested clips mixed with static noise at varying Signal-to-Noise Ratios (SNR).
+* Baseline Matcher: Accuracy degraded rapidly below +10 dB SNR, as white noise flattens the average spectral vector.
+* Shazam Matcher: Showed extreme resilience, maintaining high accuracy even at 0 dB SNR (where noise is equally as loud as the music signal). High-energy peaks still reliably poked above the noise floor to form matching hashes.
+
+Task 10: Transformation Robustness (Time-Stretch & Pitch-Shift)
+
+* Time-Stretching (Speed): 
+  - Baseline (Spectral Average): Highly Robust. Averaging the spectrum throws away time entirely, making it unaffected by +/-10% speed changes.
+  - Shazam (Peak-Pair Hash): Fails. Time-stretching changes the dt between peaks. The exact SHA-1 hashes no longer match.
+
+* Pitch-Shifting (Key): 
+  - Baseline (Spectral Average): Fails Gracefully. Cosine similarity slowly degrades as the frequency profile shifts out of alignment.
+  - Shazam (Peak-Pair Hash): Fails Instantly. Shifting the pitch moves peaks into different frequency bins (f1, f2). A single bin change triggers the avalanche effect in SHA-1, destroying the match.
+
+Conclusion
+--------------------------------------------------------------------
+The Shazam-style combinatorial hashing method is vastly superior to baseline spectral averaging for identifying short, noisy clips. It is highly resistant to additive noise and clipping. However, because it relies on exact matching of localized integers, it is extremely fragile to non-linear transformations like time-stretching and pitch-shifting, which alter the underlying coordinate geometry of the audio.
