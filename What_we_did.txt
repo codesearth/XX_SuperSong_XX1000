@@ -1,4 +1,4 @@
-Sonic Signatures: Complete Experimental Results & Analysis
+Sonic Signatures: Complete Experimental Analysis
 ====================================================================
 Repository: codesearth/XX_SuperSong_XX1000
 Project Pipeline: Audio Analysis -> Spectrogram Fingerprinting -> Time-Offset Recognition -> Robustness Testing
@@ -53,6 +53,4 @@ Task 10: Transformation Robustness (Time-Stretch & Pitch-Shift)
   - Baseline (Spectral Average): Fails Gracefully. Cosine similarity slowly degrades as the frequency profile shifts out of alignment.
   - Shazam (Peak-Pair Hash): Fails Instantly. Shifting the pitch moves peaks into different frequency bins (f1, f2). A single bin change triggers the avalanche effect in SHA-1, destroying the match.
 
-Conclusion
---------------------------------------------------------------------
-The Shazam-style combinatorial hashing method is vastly superior to baseline spectral averaging for identifying short, noisy clips. It is highly resistant to additive noise and clipping. However, because it relies on exact matching of localized integers, it is extremely fragile to non-linear transformations like time-stretching and pitch-shifting, which alter the underlying coordinate geometry of the audio.
+
