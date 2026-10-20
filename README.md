@@ -3,7 +3,9 @@
 # Sonic Signatures: Audio Recognition Pipeline 🎵
 
 **Team Members:** Group 1: naman sambhav ujjwal vansh 
+
                   Group 2: arnav ojas sayujya yuv 
+                  
                   Group 3: anchit aniket chinmay raghav
 
 ## Project Overview
