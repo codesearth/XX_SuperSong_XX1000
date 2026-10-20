@@ -2,11 +2,13 @@
 
 # Sonic Signatures: Audio Recognition Pipeline 🎵
 
-**Team Members:** Group 1: naman sambhav ujjwal vansh 
+**Team Members:**
 
-                  Group 2: arnav ojas sayujya yuv 
+Group 1: naman sambhav ujjwal vansh.
                   
-                  Group 3: anchit aniket chinmay raghav
+Group 2: arnav ojas sayujya yuv.
+
+Group 3: anchit aniket chinmay raghav.
 
 ## Project Overview
 This project explores digital signal processing by building a Shazam-style song recognition pipeline from scratch. It takes a short, noisy audio clip, extracts spectral peaks into a constellation map, generates hash fingerprints, and identifies the song using time-offset histograms.
